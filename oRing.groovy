@@ -25,9 +25,18 @@ CSG generate(){
 	println "Measurment massCentroidZValue =  "+massCentroidZValue
 	println "Measurment IDValue =  "+IDValue
 	println "Measurment massKgValue =  "+massKgValue
-	// Stub of a CAD object
-	CSG part = new Cube().toCSG()
-	return part
+	double tireID = IDValue
+	double tireOD = ODValue
+	double width = widthValue
+	double sweepCenter = (double)(tireOD+tireID)/4.0
+	def tire = CSG.unionAll(
+		Extrude.revolve(new Cylinder(width/2,1.0).toCSG().roty(90),
+		sweepCenter, // rotation center radius, if 0 it is a circle, larger is a donut. Note it can be negative too
+		(double)360,// degrees through wich it should sweep
+		(int)30)//number of sweep increments
+		)
+		.roty(90)
+	return tire
 		.setParameter(size)
 		.setRegenerate({generate()})
 }
